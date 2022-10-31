@@ -24,6 +24,7 @@ import DashBoard from './Screens/Dashboard';
 import RoleScreen from './Screens/RoleScreen';
 import TabScreen from './Screens/TabScreen';
 import getRoles from './Screens/getRoles';
+import ShowInvitesScreen from './Screens/showInvitesScreen'
 import { Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -115,6 +116,11 @@ export default function App() {
             <Stack.Screen
               name="getRoles"
               component={getRoles}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="ShwoInvitesScreen"
+              component={ShowInvitesScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

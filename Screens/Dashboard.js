@@ -14,7 +14,12 @@ import {
   StatusBar,
   TextInput,
 } from 'react-native';
+import { Dimensions } from 'react-native';
+import { Card } from 'react-native-shadow-cards';
+import { getCollectedPhotos } from '../DB-functions';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 const BLUESH = '#3185FC';
 const BACKGROUND = '#F5FAFF';
 const MILK = '#e7dddcff';
@@ -23,8 +28,53 @@ const SHADOWGREY = '#E8E8E8';
 const ALMOSTBLACK = '#020044';
 
 export default function DashBoard({ route, navigation }) {
-  // const { user, project } = route.params;
-  const userr = {
+  const { user, project } = route.params;
+  //console.log("from dashboard")
+  // console.log(user)
+  //console.log(project)
+
+
+  const [userr, setUserr] = useState(user);
+  const [projectData, setProject] = useState(project)
+
+  const [startDate, setSstartDate] = useState()
+  const [collectedData, setCollectedData] = useState({})
+  const [isCollectedDataNotNull,setIsCollectedDataNotNull] = useState(false)
+  const [isPromiseArrived,setIsPromiseArrived] = useState(false);
+  const[progressInfo,setProgressInfo] = useState({Collected:"",annotated:""});
+  
+
+  useEffect(() => {
+    getCollectedPhotos(projectData._id, (stat, msg, res) => {
+     
+      if (stat) {
+        setCollectedData(res);
+        setIsCollectedDataNotNull(true)
+        setIsPromiseArrived(true)
+        setProgressInfo({ ...progressInfo, Collected: res.length,annotated:returnTotal(res)})
+        console.log(returnTotal(res))
+        //console.log(res)
+        //console.log("Ok here collected data ")
+      } else {
+        setIsPromiseArrived(true)
+        console.log("No collected")
+        setProgressInfo({ ...progressInfo, Collected: "Nothing has been collected" })
+        //console.log(projectData)
+      }
+    })
+  }, [])
+
+  array1 = [{annotated:false},{annotated:true},{annotated:true},{annotated:true}];
+  
+
+  function returnTotal(arr){
+    let counter = 0;
+    arr.forEach(element => element.annotated?counter=counter+1:"");
+    return counter;
+  }
+
+
+  const userr1 = {
     _id: '62d39746699a691e0000dede',
     user_name: 'MrFares',
     password: '1',
@@ -40,7 +90,7 @@ export default function DashBoard({ route, navigation }) {
     _version: 3,
     keep_me_logined: false,
   };
-  const project = {
+  const projects = {
     "_id": "62d39858699a691e0000df23",
     "project_owner": "MrFares",
     "project_name": "Face_recognition",
@@ -70,13 +120,46 @@ export default function DashBoard({ route, navigation }) {
     "_changedby": "api",
     "_version": 2
   }
+
+  const start_Date = new Date(projectData._created);
+
+  //setSstartDate("   "+start_Date.getDate()+"/"+start_Date.getMonth()+"/"+start_Date.getFullYear()+"     "+start_Date.getHours()+":"+start_Date.getMinutes())
+  const starDateTime = "   " + start_Date.getDate() + "/" + (start_Date.getMonth() + 1) + "/" + start_Date.getFullYear() + "   " + start_Date.getHours() + ":" + start_Date.getMinutes();
+  var dueDate = new Date();
+  dueDate.setDate(start_Date.getDate() + parseInt(projectData.project_info.time_limit))
+  const DueDateTime = "   " + dueDate.getDate() + "/" + (dueDate.getMonth() + 1) + "/" + dueDate.getFullYear() + "   " + start_Date.getHours() + ":" + start_Date.getMinutes();
+
+
+
+  function calcualteTime(projectStartDate, timelimit) {
+
+    const start_Date = new Date(projectStartDate);
+    var dueDate = new Date();
+
+    dueDate.setDate(start_Date.getDate() + parseInt(timelimit))
+    var nowD = new Date()
+    //console.log("due++++")
+
+    return days(dueDate, nowD)
+  }
+
+
+  const days = (date_1, date_2) => {
+    let difference = date_1.getTime() - date_2.getTime();
+    //console.log(date_1.getTime(),date_2.getTime())
+    //console.log(difference)
+    let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
+  //  console.log(TotalDays)
+    return TotalDays;
+  }
+
+
+
   return (
     <View style={styles.backgroundview}>
       <View style={styles.headerview}>
-
         <View style={styles.view_goback}>
           <View style={{ width: '20%' }}>
-
             <TouchableOpacity
               onPress={() => {
                 navigation.goBack();
@@ -86,38 +169,91 @@ export default function DashBoard({ route, navigation }) {
                 style={styles.gobackarrow}
               />
             </TouchableOpacity>
-
           </View>
+
           <View style={{ width: '50%', marginRight: '20%' }}>
-            
             <Text style={styles.screenheader}>DashBoard</Text>
           </View>
 
         </View>
 
-
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('InviteScreen', {
-              user: userr,
-              project: project,
-            });
-          }}
-          style={styles.btn}></TouchableOpacity>
-        <FlatList style={styles.pagebody}>
-          <View style={{ backgroundColor: 'black', width: "100%", height: "100%" }}></View>
-        </FlatList>
       </View>
+
+
+
+
+      <View style={styles.bodyView}>
+        <View style={{ borderWidth: 0, marginBottom: windowHeight * 0.1 }}><Text style={{ color: ORANGE, fontSize: 28 }}>{projectData.project_name}</Text></View>
+
+
+        <Card style={{ padding: 10, margin: 10 }}>
+          <Text style={[styles.datesTitleText, { fontSize: 18 }]}>Schedule  {"\n"}</Text>
+          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Start Date:</Text>{starDateTime} </Text>
+
+          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Due Date:</Text>{DueDateTime}</Text>
+          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Days left:  </Text>{calcualteTime(projectData._created, projectData.project_info.time_limit)}</Text>
+          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Days spent:  </Text>{parseInt(projectData.project_info.time_limit) - calcualteTime(projectData._created, projectData.project_info.time_limit)}</Text>
+
+        </Card>
+
+
+
+        <Card style={{ padding: 10, margin: 10 }}>
+          <Text style={[styles.datesTitleText, { fontSize: 18 }]}>Progress  {"\n"}</Text>
+          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Collected :  </Text>{progressInfo.Collected}</Text>
+          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Annotated :  </Text>{progressInfo.annotated}</Text>
+          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Consumed budget :  </Text></Text>
+
+        </Card>
+        <View>
+         
+        {isCollectedDataNotNull?<Image source={{uri:collectedData[0].data}}style={styles.gobackarrow} onError={(err)=>console.log("Fetching image error")} />:""}
+        </View>       
+
+        <View style={styles.Bodyfottor}>
+          <TouchableOpacity
+            onPress={() => { navigation.navigate('InviteScreen', { user: userr, project: projectData, }); }}
+            style={styles.btn}>
+            <Text style={{ fontSize: 18, fontWeight: "600", color: 'white' }}>Invite user</Text>
+          </TouchableOpacity>
+
+
+        </View>
+
+
+
+      </View>
+
+
+
     </View>
   );
 }
 const styles = StyleSheet.create({
+
+  bodyView: {
+    height: "90%", width: "100%",
+    //borderWidth: 5, borderColor: 'yellow',
+    alignItems: "center",
+    justifyContent: 'center'
+
+  },
+  datesTitleText: {
+    fontSize: 16, fontWeight: "600"
+  }, dateText: {
+    fontSize: 16, fontWeight: "normal", marginBottom: 8
+  },
+  Bodyfottor: {
+    height: "20%", width: "100%",
+    alignItems: 'center', marginBottom: "3%"
+  },
   pagebody: {
-    backgroundColor: 'red',
-    height: "1000%",
+    backgroundColor: 'yellow',
+    height: "80%",
+    // borderWidth: 3, borderColor: 'blue',
     width: "100%",
-    //justifyContent:"center",
-    //alignItems:"cetner"
+    // justifyContent:"center",
+    // alignItems:"cetner"
   },
   text_error: {
     color: ORANGE,
@@ -126,12 +262,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   btn: {
+    alignItems: 'center',
     marginTop: '5%',
-    width: '50%',
+    width: '60%',
     backgroundColor: BLUESH,
     height: 50,
-    borderRadius: 22,
-
+    borderRadius: 18,
     justifyContent: 'center',
   },
   box: {
@@ -167,27 +303,14 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 2.5,
   },
-  txtinput: {
-    marginTop: 0,
-    marginBottom: '5%',
-    fontSize: 16,
-    textAlign: 'center',
-    width: '85%',
-    backgroundColor: 'white',
-    height: 55,
-    borderRadius: 40,
-    borderWidth: 1.5,
-    color: ALMOSTBLACK,
-    borderColor: SHADOWGREY,
-    shadowColor: SHADOWGREY,
-    shadowOpacity: 1,
-  },
+
   gobackarrow: {
     height: 40,
     width: 40,
     paddingRight: '20%',
   },
   view_goback: {
+    //borderWidth: 2,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -198,7 +321,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '20%',
     backgroundColor: BACKGROUND,
-    // borderRadius: '30%',
+    borderRadius: '30%',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '10%',
@@ -207,7 +330,7 @@ const styles = StyleSheet.create({
     backgroundColor: BACKGROUND,
     width: '55%',
     height: '25%',
-    // borderRadius: '60%',
+    borderRadius: '60%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -243,7 +366,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerview: {
-    justifyContent: 'center',
+    //borderWidth:2,
+    justifyContent: 'flex-end',
     alignItems: 'center',
     width: '100%',
     height: '10%',
@@ -262,8 +386,8 @@ const styles = StyleSheet.create({
     height: '15%',
     width: '90%',
     backgroundColor: 'white',
-    // borderRadius: '30%',
-    borderWidth: 1,
+    borderRadius: '30%',
+    //borderWidth: 1,
     borderColor: SHADOWGREY,
     shadowColor: SHADOWGREY,
     shadowOpacity: 1,
@@ -277,7 +401,7 @@ const styles = StyleSheet.create({
     borderColor: SHADOWGREY,
     shadowOpacity: 1,
     shadowColor: SHADOWGREY,
-    // borderRadius: '30%',
+    borderRadius: '30%',
     margin: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -285,15 +409,16 @@ const styles = StyleSheet.create({
   profile_icon: {
     height: 90,
     width: 90,
-    //borderRadius: '100%',
+    borderRadius: '100%',
     borderWidth: 1.5,
     borderColor: ORANGE,
     margin: 10,
   },
   backgroundview: {
+
     height: '100%',
     width: '100%',
-    justifyContent: 'center',
+    //justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: BACKGROUND,
   },

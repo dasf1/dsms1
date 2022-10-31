@@ -10,6 +10,8 @@ import {
   KeyboardAvoidingView,
   ImageBackground,FlatList
 } from 'react-native';
+import { Dimensions } from 'react-native';
+
 import {isUsernameORemail,isNotEmptyOrSpaces} from '../Function/Validation';
 import {getLoginStatus,loginUser,autoLogeIn,getUserData,logoutUser} from '../Function/handlers';
 
@@ -19,6 +21,9 @@ const MILK = '#e7dddcff';
 const ORANGE = '#FD6B03';
 const SHADOWGREY = '#E8E8E8';
 const ALMOSTBLACK = '#020044';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function LoginScreen({ navigation }) {
   const [user_name, set_user_name] = useState(null);
@@ -49,11 +54,16 @@ export default function LoginScreen({ navigation }) {
       <View styles={styles.mainview}>
       
            <View style={styles.backgroundimage}>
+
+           <Image
+            style={styles.mainicon}
+            source={require('./assets/back_ground_icon.png')}
+          />
        
           <TextInput
             placeholderTextColor="grey"
             style={styles.txtinput}
-            placeholder="Enter email or username"
+            placeholder="Your email or username"
             value={user_name}
             onChangeText={(text)=>{
               const user_name = text.replace(/\s/g, '');
@@ -64,7 +74,7 @@ export default function LoginScreen({ navigation }) {
           <TextInput
             placeholderTextColor="grey"
             style={styles.txtinput}
-            placeholder="Enter a Password"
+            placeholder="Your password"
             value={password}
             onChangeText={(text)=>{
               const password = text.replace(/\s/g, '');
@@ -93,7 +103,7 @@ export default function LoginScreen({ navigation }) {
               navigation.navigate('Register');
             
             }}>
-            <Text style={styles.singup_btn}> Create an Account</Text>
+            <Text style={styles.singup_btn}> Don't have account?</Text>
           </TouchableOpacity>
 
           
@@ -107,7 +117,7 @@ const styles = StyleSheet.create({
   
   singup_btn: {
     textDecorationLine: 'underline',
-    marginTop: '2.5%',
+    marginTop: '5.5%',
     color: ORANGE,
     shadowOpacity: 0.5,
     shadowOffset: 1,
@@ -147,10 +157,10 @@ const styles = StyleSheet.create({
     marginBottom: '5%',
     fontSize: 16,
     textAlign: 'center',
-    width: '85%',
+    width: '90%',
     backgroundColor: 'white',
     height: 55,
-    borderRadius: 40,
+    borderRadius: 15,
     borderWidth: 1.5,
     color: ALMOSTBLACK,
     borderColor: SHADOWGREY,
@@ -158,11 +168,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
   },
   btn: {
-    marginTop: '10%',
-    width: '50%',
+    marginTop: '5%',
+    width: '70%',
     backgroundColor: BLUESH,
     height: 50,
-    borderRadius: 22,
+    borderRadius: 15,
     justifyContent: 'center',
   },
   mainicon: {

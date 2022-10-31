@@ -21,9 +21,8 @@ const logoutUser = function (navigationVar, auth2 = auth) {
         signOut(auth2).then(
             (ref) => {
 
-             //  navigationVar.popToTop()
+               navigationVar.popToTop()
                 console.log('---Signout successful -----byee ')
-
 
             }
         ).catch(
@@ -373,7 +372,7 @@ async function getUserData(username, navigationVariable,CallBackMsg, getBy = "us
         CallBackMsg(true,"")
         navigationVariable.navigate(SceenNametoNavigate,
              {user: res[0] });
-        console.log(res[0]);
+       // console.log(res[0]);
     } else {
        CallBackMsg(false,"Incorrect Username/Email or password \n Make sure Case-sensitivity")
        

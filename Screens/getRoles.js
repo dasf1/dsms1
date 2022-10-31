@@ -4,55 +4,64 @@ import { CheckBox } from 'react-native-elements'
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 //import {getData} from '../functions/handlers';
 
+const BLUESH = '#3185FC';
+const BACKGROUND = '#F5FAFF';
+const MILK = '#e7dddcff';
+const ORANGE = '#FD6B03';
+const SHADOWGREY = '#E8E8E8';
+const ALMOSTBLACK = '#020044';
+
 export default function Roles({ navigation, route }) {
-    const {user} = route.params;
-    const {Types}= route.params;
-    const {projectname} = route.params;
-    const {ProjectInfo} = route.params;
+    const { user } = route.params;
+    const { Types } = route.params;
+    const { projectname } = route.params;
+    const { ProjectInfo } = route.params;
 
-    const[Rprojectname,setRprojectname] = useState(projectname);
+    const [Rprojectname, setRprojectname] = useState(projectname);
     const [userr, setuser] = useState(user);
-    const [ProjectInformation ,setProjectInfo] = useState(ProjectInfo);
-    const [isSelected ,setisSelected] = useState(false);
-    const [errorMsg,setErrorMsg] = useState("");
-    const[Ptypes,setPtype] = useState([]);
+    const [ProjectInformation, setProjectInfo] = useState(ProjectInfo);
+    const [isSelected, setisSelected] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+    const [Ptypes, setPtype] = useState([]);
 
-    const [projectTypeBool ,setprojectTypeBool] = useState({
-        Photo:false,
-        Video:false,
-        Audio:false,
-        Text:false
+
+    const [projectTypeBool, setprojectTypeBool] = useState({
+        Photo: false,
+        Video: false,
+        Audio: false,
+        Text: false
     })
-       
+
     Object.keys(projectTypeBool).forEach(key => {
-        if(key == ProjectInformation.project_type){
-        projectTypeBool[key] = true;
-       // console.log(projectTypeBool)
-    }
+        if (key == ProjectInformation.project_type) {
+            projectTypeBool[key] = true;
+            // console.log(projectTypeBool)
+        }
 
     })
     //console.log(projectTypeBool)
 
-    const [collectText, setCollectText] = useState(projectTypeBool.Text?true:false);
-    const [annotateText, setaAnotateText] = useState(projectTypeBool.Text?true:false);
+    const [collectText, setCollectText] = useState(projectTypeBool.Text ? true : false);
+    const [annotateText, setaAnotateText] = useState(projectTypeBool.Text ? true : false);
 
-    const [collectPhoto, setCollectPhoto] = useState(projectTypeBool.Photo?true:false);
-    const [annotatePhoto, setaAnotatePhoto] = useState(projectTypeBool.Photo?true:false);
+    const [collectPhoto, setCollectPhoto] = useState(projectTypeBool.Photo ? true : false);
+    const [annotatePhoto, setaAnotatePhoto] = useState(projectTypeBool.Photo ? true : false);
 
-    const [collectVideo, setCollectVideo] = useState(projectTypeBool.Video?true:false);
-    const [annotateVideo, setaAnotateVideo] = useState(projectTypeBool.Video?true:false);
+    const [collectVideo, setCollectVideo] = useState(projectTypeBool.Video ? true : false);
+    const [annotateVideo, setaAnotateVideo] = useState(projectTypeBool.Video ? true : false);
 
-    const [collectAudio, setCollectAudio] = useState(projectTypeBool.Audio?true:false);
-    const [annotateAudio, setaAnotateAudio] = useState(projectTypeBool.Audio?true:false);
-    
-    
-    
+    const [collectAudio, setCollectAudio] = useState(projectTypeBool.Audio ? true : false);
+    const [annotateAudio, setaAnotateAudio] = useState(projectTypeBool.Audio ? true : false);
+
+
+
 
     return (
         <View style={getRolePage.container}>
 
-            <Text style={{fontSize:22}}> Assigin roles to "{Rprojectname}" Project  </Text>
-            <Text style={{color:"#f00"}}> {errorMsg}  </Text>
+            <Text style={{ fontSize: 22 }}> Assigin roles to "{Rprojectname}" Project  </Text>
+            <Text style={{fontSize:11}}>assign the default roles that users play when{"\n"} they join the project (You can modify later)</Text>
+            <Text style={{ color: "#f00" }}> {errorMsg}  </Text>
 
             <View style={getRolePage.rolesContainer}>
 
@@ -118,9 +127,9 @@ export default function Roles({ navigation, route }) {
                 };
 
 
-               // console.log(roles.Photo.annotate);
+                // console.log(roles.Photo.annotate);
 
-              // console.log(listofTypea)
+                // console.log(listofTypea)
                 /*
                 
                     Object.keys(roles).forEach(key => {
@@ -135,18 +144,22 @@ export default function Roles({ navigation, route }) {
                             console.log((roles[key][item]))
                         })
                       });*/
-                 
 
-                 // console.log("State is "+ isSelected)
-                 
-                    PostNewProject(userr.user_name,Rprojectname,ProjectInformation,FunctionCalled,navigation,userr)
-                    
-                    function FunctionCalled(sts,msg){
-                     setErrorMsg(msg)
-                     console.log(sts,msg);
-                    }
-                  
-                  
+
+                // console.log("State is "+ isSelected)
+
+                PostNewProject(userr.user_name, Rprojectname, ProjectInformation,roles[ProjectInformation.project_type], FunctionCalled, navigation, userr)
+
+                function FunctionCalled(sts, msg) {
+                    setErrorMsg(msg)
+                    console.log(sts, msg);
+                    console.log(roles)
+                }
+               
+               
+                console.log(roles[ProjectInformation.project_type])
+
+
 
                 // getData()
             }} >
@@ -158,42 +171,43 @@ export default function Roles({ navigation, route }) {
 }
 
 
-async function PostNewProject(username,projectname,Pinfo,callBack,navigation,userdata){
-    
+async function PostNewProject(username, projectname, Pinfo,roles, callBack, navigation, userdata) {
+
     const url =
-    'https://dsms0-7e9f.restdb.io/rest/data-scientist-projects';
+        'https://dsms0-7e9f.restdb.io/rest/data-scientist-projects';
 
-  var options = {
-    method: 'POST',
+    var options = {
+        method: 'POST',
 
-    headers: {
-      'cache-control': 'no-cache',
-      'x-apikey': 'ac46ad7c4da469f793cc6cb27c88a941ae25d',
-      'content-type': 'application/json',
-    },
+        headers: {
+            'cache-control': 'no-cache',
+            'x-apikey': 'ac46ad7c4da469f793cc6cb27c88a941ae25d',
+            'content-type': 'application/json',
+        },
 
-    body: JSON.stringify({
-      project_owner: username,
-      project_name: projectname,
-      project_info:Pinfo,
-      members: [],
-      data: [],
-    }),
-    json: true,
-  };
+        body: JSON.stringify({
+            project_owner: username,
+            project_name: projectname,
+            project_info: Pinfo,
+            members: [],
+            data: [],
+            defultRoles:roles
+        }),
+        json: true,
+    };
 
-  try {
-    let res = await fetch(url, options);
-    let jsondata = await res.json();
-    //console.log('The User : ' + username + ' Create a New PROJECT');
-    console.log(Date());
-    console.log(userdata)
-    navigation.navigate('Test',{userr:userdata[0]});
-  } catch (error) {
+    try {
+        let res = await fetch(url, options);
+        let jsondata = await res.json();
+        //console.log('The User : ' + username + ' Create a New PROJECT');
+        console.log(Date());
+        console.log(userdata)
+        navigation.navigate('Test', { userr: userdata[0] });
+    } catch (error) {
 
-    alert(error);
-    callBack(false,error);
-  }
+       // alert(error);
+        callBack(false, "Error in creating new project");
+    }
 
 }
 
@@ -208,7 +222,7 @@ async function PostNewProject(username,projectname,Pinfo,callBack,navigation,use
 const getRolePage = StyleSheet.create({
     container: {
         flex: 1, alignItems: "center",
-        backgroundColor: "#ccc",
+        backgroundColor: BACKGROUND,
         justifyContent: 'center'
     },
     rolesContainer: {

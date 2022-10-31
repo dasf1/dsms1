@@ -76,7 +76,7 @@ export default function RegisterScreen({ navigation, route }) {
           <TextInput
             placeholderTextColor="grey"
             style={styles.txtinput}
-            placeholder="Enter a UserName"
+            placeholder="Your username"
             value={user_name}
             onChangeText={(text) => {
               const user_name = text.replace(/\s/g, '');
@@ -104,7 +104,7 @@ export default function RegisterScreen({ navigation, route }) {
           <TextInput
             placeholderTextColor="grey"
             style={styles.txtinput}
-            placeholder="Enter a Password"
+            placeholder="Your password"
             value={password}
             onChangeText={(text) => {
               const password = text.replace(/\s/g, '');
@@ -130,7 +130,7 @@ export default function RegisterScreen({ navigation, route }) {
           <TextInput
             placeholderTextColor="grey"
             style={styles.txtinput}
-            placeholder="Enter Your Email"
+            placeholder="Your email"
          
             onChangeText={(text) => {
           
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   btntxt: {
     color: 'white',
     textAlign: 'center',
-    fontWeight: 'bold',
+  //  fontWeight: 'bold',
     fontSize: 18,
   },
   text_error: {
@@ -270,10 +270,10 @@ const styles = StyleSheet.create({
     marginBottom: '5%',
     fontSize: 16,
     textAlign: 'center',
-    width: '85%',
+    width: '90%',
     backgroundColor: 'white',
     height: 55,
-    borderRadius: 40,
+    borderRadius:15,
     borderWidth: 1.5,
     color: ALMOSTBLACK,
     borderColor: SHADOWGREY,
@@ -282,10 +282,10 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginTop: '10%',
-    width: '50%',
+    width: '70%',
     backgroundColor: BLUESH,
     height: 50,
-    borderRadius: 22,
+    borderRadius: 15,
     justifyContent: 'center',
   },
 });

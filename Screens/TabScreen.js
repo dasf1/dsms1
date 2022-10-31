@@ -38,6 +38,7 @@ export default function TabScreen({ route, navigation }) {
     const { user } = route.params;
     const [projects, setprojects] = useState(null);
     const [userr,setUser]=useState(user)
+    
     return (
 
         <SafeAreaView style={{ width: "100%", height: windowHeight + 15 }} >
@@ -63,7 +64,7 @@ export default function TabScreen({ route, navigation }) {
                         )
                     }} />
 
-                <Tab.Screen name="Account" component={ChatFun}
+                <Tab.Screen name="Account" component={ProfileScreen}
                 initialParams={{user:userr}}
                     options={{
 
@@ -84,6 +85,13 @@ const HomeTab = ({ route, navigation }) => {
     const { user } = route.params;
     const [userr, setuser] = useState(user);
     const [projects, setprojects] = useState(null);
+    const [emptProjectyMsg, setEmptProjectyMsg] = useState("")
+    const [emptyClicableMsg , setEmptyClicableMsg] = useState("");
+
+    setTimeout(()=>{
+        setEmptyClicableMsg("add new Project")
+        setEmptProjectyMsg("You have no projects")
+    },5000)
 
 
     useEffect(() => {
@@ -95,7 +103,7 @@ const HomeTab = ({ route, navigation }) => {
         const urlprojects =
             'https://dsms0-7e9f.restdb.io/rest/data-scientist-projects?q={"project_owner":"' +
             userr.user_name +
-            '"}';
+            '"}&metafields=true';
         var options = {
             method: 'GET',
             headers: {
@@ -111,6 +119,7 @@ const HomeTab = ({ route, navigation }) => {
             let response = await fetch(urlinfo, options);
             let res = await response.json();
             setuser(res[0]);
+           // console.log("from get info",res[0])
         }
         async function getprojects() {
             let response = await fetch(urlprojects, options);
@@ -129,16 +138,17 @@ const HomeTab = ({ route, navigation }) => {
             <View style={styles.projectsview}>
 
                 <Text style={styles.screenheader}>Projects</Text>
-
-                <ProjectsFlatList onHeaderbtnPress={
+           
+           <ProjectsFlatList onHeaderbtnPress={
                     () => { navigation.navigate('CreateProject', { user: userr }) }}
                     navigation={navigation}
                     ProjectStyle={styles.projectsinfo}
                     data={projects}
-                    userInfo={userr}>
-
-
-                </ProjectsFlatList>
+                    onEmptyClicableMsg={emptyClicableMsg}
+                    onEmptyMsg={emptProjectyMsg}
+                    userInfo={userr}></ProjectsFlatList>
+            
+       
 
 
             </View>

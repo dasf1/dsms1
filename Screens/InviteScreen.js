@@ -13,9 +13,13 @@ import {
   ScrollView,
   SafeAreaView,
   StatusBar,
-  TextInput,
+  TextInput, ToastAndroid
 } from 'react-native';
-
+import { Dimensions } from 'react-native';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { PostInvite, isInviteSent,getDSInvites} from '../DB-functions';
 const BLUESH = '#3185FC';
 const BACKGROUND = '#F5FAFF';
 const MILK = '#e7dddcff';
@@ -23,13 +27,18 @@ const ORANGE = '#FD6B03';
 const SHADOWGREY = '#E8E8E8';
 const ALMOSTBLACK = '#020044';
 
-export default function InviteScreen({route, navigation }) {
-  
-  
-  const { user,project } = route.params;
-  
+export default function InviteScreen({ route, navigation }) {
+
+
+  const { user, project } = route.params;
   const [searched_users, set_search_users] = useState(null);
-  
+  const [invites,setInvites] = useState({});
+  const setToastMessage = message => {
+    ToastAndroid.showWithGravity(
+      message, ToastAndroid.SHORT, ToastAndroid.CENTER,);
+  };
+
+
 
   return (
     <View style={styles.backgroundview}>
@@ -63,7 +72,7 @@ export default function InviteScreen({route, navigation }) {
               'x-apikey': 'ac46ad7c4da469f793cc6cb27c88a941ae25d',
             },
           };
-          
+
           if (searching.length != '') {
             getdata();
           } else {
@@ -86,15 +95,46 @@ export default function InviteScreen({route, navigation }) {
         data={searched_users}
         horizontal={false}
         inverted={false}
+        contentContainerStyle={styles.FlatlistcontentStyle}
+
         renderItem={({ item }) => (
-          
-          <TouchableOpacity onPress={()=>{
-            navigation.navigate('InviteInProfile',{owner:user , visited : item , project:project})
-          }} style={styles.flatlistusers}>
-          <Image style={styles.usericon} source={{uri : item.profile_image}}/>
-            <Text style={styles.btntxt}>{item.user_name}</Text>
-          </TouchableOpacity>
+          <View style={styles.flatlistusers}>
+            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => {
+              //  console.log("project info is --------------------------------------")
+              // console.log(project)
+              navigation.navigate('InviteInProfile', { owner: user, visited: item, project: project })
+            }} >
+              <Image style={styles.usericon} source={{ uri: item.profile_image }} />
+              <Text style={styles.btntxt}>{item.user_name}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => {
+              isInviteSent(user._id, item._id,project._id, (stat, msg) => {
+                console.log(project._id)
+                if (stat) {
+                  PostInvite(user._id, item._id,item.user_name, project._id,msg =>setToastMessage(msg))
+                } else {
+                  //console.log(msg);
+                  setToastMessage(msg)
+                }
+              });
+              //PostInvite(user.user_name,item.user_name, project._id) 
+            }
+            }>
+              <Text style={{ marginLeft: 30 }}><AntDesign name="adduser" size={30} color={ORANGE} /></Text>
+            </TouchableOpacity>
+
+          </View>
+
+
+
         )}></FlatList>
+
+      <TouchableOpacity style={styles.btn} onPress={()=>{
+        navigation.navigate('ShwoInvitesScreen', { user: user, project: project })
+      }}>
+        <Text style={{ fontSize: 18, fontWeight: "600", color: 'white', alignSelf: 'center' }}>View Inviets</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -108,37 +148,42 @@ const styles = StyleSheet.create({
   usericon: {
     height: 50,
     width: 50,
-    borderRadius: '100%',
+    // borderRadius: '100%',
     borderColor: ORANGE,
     marginRight: '10%',
   },
 
   flatlistusers: {
-    backgroundColor: BLUESH,
+    backgroundColor: ALMOSTBLACK,
     flexDirection: 'row',
-    width: 333,
-    height: 100,
+    width: windowWidth * 0.85,
+    height: 70,
     borderWidth: 1.5,
     borderColor: 'white',
     shadowOpacity: 1,
     shadowColor: SHADOWGREY,
-    borderRadius: '30%',
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    margin:10
+    margin: 10
   },
 
   flatliststyle: {
     height: '40%',
     backgroundColor: SHADOWGREY,
     width: '90%',
-    borderBottomRightRadius: '30%',
-    borderBottomLeftRadius: '30%',
+    borderBottomRightRadius: 25,
+    borderBottomLeftRadius: 25,
     borderWidth: 1.5,
     borderColor: SHADOWGREY,
     shadowColor: SHADOWGREY,
     shadowOpacity: 1,
-    alignItems: 'center',
+    //alignItems: 'center',
+  },
+
+  FlatlistcontentStyle: {
+    alignItems: 'center',//borderWidth:3
+
   },
   text_error: {
     color: ORANGE,
@@ -163,7 +208,7 @@ const styles = StyleSheet.create({
     width: '60%',
     backgroundColor: 'white',
     height: 55,
-    borderRadius: 40,
+    borderRadius: 30,
     borderWidth: 1.5,
     color: ALMOSTBLACK,
     shadowColor: SHADOWGREY,
@@ -194,9 +239,9 @@ const styles = StyleSheet.create({
     width: '90%',
     backgroundColor: 'white',
     height: 55,
-    borderTopLeftRadius: '30%',
-    borderTopRightRadius: '30%',
-    borderWidth: 3,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    borderWidth: 1,
     color: ALMOSTBLACK,
     borderColor: ORANGE,
     shadowColor: SHADOWGREY,
@@ -218,7 +263,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '20%',
     backgroundColor: BACKGROUND,
-    borderRadius: '30%',
+    // borderRadius: '30%',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: '10%',
@@ -227,7 +272,7 @@ const styles = StyleSheet.create({
     backgroundColor: BACKGROUND,
     width: '55%',
     height: '25%',
-    borderRadius: '60%',
+    // borderRadius: '60%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -282,7 +327,7 @@ const styles = StyleSheet.create({
     height: '15%',
     width: '90%',
     backgroundColor: 'white',
-    borderRadius: '30%',
+    // borderRadius: '30%',
     borderWidth: 1,
     borderColor: SHADOWGREY,
     shadowColor: SHADOWGREY,
@@ -297,7 +342,7 @@ const styles = StyleSheet.create({
     borderColor: SHADOWGREY,
     shadowOpacity: 1,
     shadowColor: SHADOWGREY,
-    borderRadius: '30%',
+    //borderRadius: '30%',
     margin: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -305,7 +350,7 @@ const styles = StyleSheet.create({
   profile_icon: {
     height: 90,
     width: 90,
-    borderRadius: '100%',
+    // borderRadius: '100%',
     borderWidth: 1.5,
     borderColor: ORANGE,
     margin: 10,

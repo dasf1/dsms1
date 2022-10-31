@@ -22,67 +22,74 @@ const ORANGE = '#FD6B03';
 const SHADOWGREY = '#E8E8E8';
 const ALMOSTBLACK = '#020044';
 
+
 export default function VisitProfileInvite({ route, navigation }) {
   const { owner, visited, project } = route.params;
 
+  const [Powner, setPowner] = useState(owner);
+  const [Pvisited, setPvisited] = useState(visited);
+  const [Thisproject,setThisProject] = useState(project);
+
   return (
-    
-      <View style={styles.backgroundimage}>
-        <View style={styles.mainview}>
-          <View style={styles.view_2}>
-            <View style={styles.view_goback}>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.goBack();
-                }}>
-                <Image
-                  source={require('./assets/GoBackArrow.png')}
-                  style={styles.gobackarrow}
-                />
-              </TouchableOpacity>
-            </View>
 
-            <View style={styles.view_4}>
-              <Text style={styles.screenheader}>{visited.user_name} Profile</Text>
-            </View>
+    <View style={styles.backgroundimage}>
+      <View style={styles.header}>
 
-            <View style={styles.view_5}>
-              <Text></Text>
-            </View>
+        <View style={styles.view_2}>
+          <View style={styles.view_goback}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}>
+              <Image source={require('./assets/GoBackArrow.png')} style={styles.gobackarrow} />
+            </TouchableOpacity>
           </View>
-          <View style={styles.view_5}></View>
-          <View style={styles.view_profilebackground}>
-            <Image
-              style={styles.profileimage}
-              source={{ uri: visited.profile_image }}
-            />
+
+          <View style={styles.view_4}>
+            <Text style={styles.screenheader}> Profile</Text>
+          </View>
+
+          <View style={styles.view_5}>
+            <Text></Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.view_5}></View>
+        <View style={styles.view_profilebackground}>
+        <Image style={styles.profileimage} source={{ uri:Pvisited.profile_image}}/>
+            
             <View style={styles.editview}>
-              <TouchableOpacity style={styles.btn}
-                onPress={() => {
-                  
+                <TouchableOpacity style={styles.btn}
+                    onPress={() => {
+                   //   console.log(Pvisited.profile_image)
 
-                  
-                 navigation.navigate('Role',{user : owner , project : project , invited : visited})
-                  
-                  
-                }}>
-                <Text style={styles.btntxt}>Assign Role</Text>
-              </TouchableOpacity>
+
+
+                        navigation.navigate('Role', { user: owner, project: project, invited: visited })
+
+
+                    }}>
+                    <Text style={styles.btntxt}>Assign Role</Text>
+                </TouchableOpacity>
             </View>
-          </View>
+        </View>
 
-          <View style={styles.infocard}>
+        <View style={styles.infocard}>
             <Text style={styles.userinfoHeader}>Info</Text>
             <Text style={styles.userinfo}>Username : {visited.user_name}</Text>
             <Text style={styles.userinfo}>Email : {visited.email}</Text>
             <Text style={styles.userinfo}>Phone : 05342304928</Text>
-          </View>
         </View>
-        <View style={styles.view_8}></View>
-      </View>
-   
+
+
+
+
+
+    </View>
   );
 }
+
 const styles = StyleSheet.create({
   changephoto: {
     textDecorationLine: 'underline',
@@ -90,6 +97,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 16,
+  }, header: {
+
+    height: "10%", width: "100%", //borderWidth: 1,
+    justifyContent: 'flex-end'
   },
   userinfo: {
     color: ALMOSTBLACK,
@@ -107,17 +118,18 @@ const styles = StyleSheet.create({
   },
 
   profileimage: {
-    opacity: 1,
-   // borderRadius: '220%',
+   //opacity: 1,
+    // borderRadius: '220%',
     marginTop: '15%',
-    marginBottom: '5%',
-    alignContent: 'center',
-    justifyContent: 'cetner',
-    alignItems: 'center',
-    height: '75%',
-    width: '75%',
-    borderWidth: 2.5,
-    borderColor: ORANGE,
+   // marginBottom: '5%',
+   // alignContent: 'center',
+   // justifyContent: 'cetner',
+   // alignItems: 'center',"50%" 
+  
+    height:" 50%",
+    width: "55%",
+   // borderWidth: 2.5,
+   // borderColor: ORANGE,
   },
   gobackarrow: {
     height: 40,
@@ -165,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '90%',
     height: '40%',
-    marginTop: '15%',
+    marginTop: '15%',//borderWidth:3,
   },
   editview: {
     justifyContent: 'flex-start',
@@ -196,18 +208,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-   btn: {
+  btn: {
     marginTop: '10%',
     width: '50%',
     backgroundColor: BLUESH,
     height: 50,
-   // borderRadius: 22,
+     borderRadius: 15,
     justifyContent: 'center',
   },
   backgroundimage: {
     height: '100%',
     width: '100%',
-    justifyContent: 'center',
+    //justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
     backgroundColor: BACKGROUND,
