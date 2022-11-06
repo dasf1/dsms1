@@ -163,14 +163,14 @@ const styles = StyleSheet.create({
 
   profileimage: {
     opacity: 1,
-    //borderRadius: 55,
+    borderRadius: 170,
     // marginTop: '15%',
     // marginBottom: '5%',
     alignContent: 'center',
     //justifyContent: 'cetner',
     alignItems: 'center',
     height: '75%',
-    width: '75%',
+    width: '60%',
     borderWidth: 2,
     borderColor: ORANGE,
   },

@@ -452,7 +452,7 @@ export default function CreateProject({ navigation, route }) {
                     }
                   }
                 }}>
-                <Text style={styles.actiontxt}>Next</Text>
+                <Text style={styles.actiontxt}>Submit</Text>
 
 
               </TouchableOpacity>

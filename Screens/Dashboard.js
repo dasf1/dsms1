@@ -64,9 +64,7 @@ export default function DashBoard({ route, navigation }) {
     })
   }, [])
 
-  array1 = [{annotated:false},{annotated:true},{annotated:true},{annotated:true}];
   
-
   function returnTotal(arr){
     let counter = 0;
     arr.forEach(element => element.annotated?counter=counter+1:"");
@@ -130,16 +128,16 @@ export default function DashBoard({ route, navigation }) {
   const DueDateTime = "   " + dueDate.getDate() + "/" + (dueDate.getMonth() + 1) + "/" + dueDate.getFullYear() + "   " + start_Date.getHours() + ":" + start_Date.getMinutes();
 
 
+// this function calculates amount of days between now day to final day of project
 
   function calcualteTime(projectStartDate, timelimit) {
 
     const start_Date = new Date(projectStartDate);
-    var dueDate = new Date();
+    var dueDate = new Date(start_Date);
 
     dueDate.setDate(start_Date.getDate() + parseInt(timelimit))
     var nowD = new Date()
-    //console.log("due++++")
-
+  
     return days(dueDate, nowD)
   }
 
@@ -183,6 +181,8 @@ export default function DashBoard({ route, navigation }) {
 
 
       <View style={styles.bodyView}>
+       
+          
         <View style={{ borderWidth: 0, marginBottom: windowHeight * 0.1 }}><Text style={{ color: ORANGE, fontSize: 28 }}>{projectData.project_name}</Text></View>
 
 
@@ -192,19 +192,31 @@ export default function DashBoard({ route, navigation }) {
 
           <Text style={styles.dateText}><Text style={styles.datesTitleText}>Due Date:</Text>{DueDateTime}</Text>
           <Text style={styles.dateText}><Text style={styles.datesTitleText}>Days left:  </Text>{calcualteTime(projectData._created, projectData.project_info.time_limit)}</Text>
-          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Days spent:  </Text>{parseInt(projectData.project_info.time_limit) - calcualteTime(projectData._created, projectData.project_info.time_limit)}</Text>
+          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Days spent:  </Text>{parseInt(projectData.project_info.time_limit) - calcualteTime(projectData._created,projectData.project_info.time_limit)}</Text>
 
         </Card>
 
 
 
-        <Card style={{ padding: 10, margin: 10 }}>
+        <Card style={{ padding: 10, margin: 5 }}>
           <Text style={[styles.datesTitleText, { fontSize: 18 }]}>Progress  {"\n"}</Text>
           <Text style={styles.dateText}><Text style={styles.datesTitleText}>Collected :  </Text>{progressInfo.Collected}</Text>
           <Text style={styles.dateText}><Text style={styles.datesTitleText}>Annotated :  </Text>{progressInfo.annotated}</Text>
-          <Text style={styles.dateText}><Text style={styles.datesTitleText}>Consumed budget :  </Text></Text>
-
+         
         </Card>
+
+       <ScrollView style={{ paddingVertical:8,width:"100%",height:windowHeight*0.3,borderWidth:0}}contentContainerStyle={{alignItems:"center"}}>
+        
+        <View style={{backgroundColor:'white',width:"95%",height:windowHeight*0.1, flexDirection:'row',borderRadius:15,justifyContent:'space-evenly',alignItems:'center'}}>
+        <Text style={{fontSize:16}}><Text style={{fontWeight:"600"}}>Collector:</Text> Dasf7328SS</Text>
+          <Image source={{uri:"https://i.pinimg.com/564x/82/3d/89/823d89bda9bfc916b2165dc61b239d7d.jpg"}} style={{width:70,height:70}} />
+        </View> 
+
+        <View style={{backgroundColor:'white',width:"95%",height:windowHeight*0.1, flexDirection:'row',borderRadius:15,justifyContent:'space-evenly',alignItems:'center'}}>
+        <Text style={{fontSize:16}}><Text style={{fontWeight:"600"}}>Collector:</Text> Dasf7328SS</Text>
+          <Image source={{uri:"https://i.pinimg.com/564x/7e/f7/08/7ef7083b42c8606ebe32f5523622f475.jpg"}} style={{width:70,height:70}} />
+        </View> 
+       </ScrollView>
         <View>
          
         {isCollectedDataNotNull?<Image source={{uri:collectedData[0].data}}style={styles.gobackarrow} onError={(err)=>console.log("Fetching image error")} />:""}
@@ -218,14 +230,9 @@ export default function DashBoard({ route, navigation }) {
           </TouchableOpacity>
 
 
-        </View>
-
-
-
       </View>
 
-
-
+      </View>
     </View>
   );
 }

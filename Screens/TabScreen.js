@@ -45,23 +45,23 @@ export default function TabScreen({ route, navigation }) {
 
             <Tab.Navigator screenOptions={{
                 tabBarStyle: {
-                    width: windowWidth - 50, alignSelf: "center", borderRadius: 15
+                    width: windowWidth - 120, alignSelf: "center", borderRadius:15
                 },
                 tabBarItemStyle: {
-
                     margin: 5,
                     borderRadius: 10,
-                }
+                },tabBarShowLabel:false
             }}>
 
 
                 <Tab.Screen name="Home" component={HomeTab}
                     initialParams={{ user: userr }}
                     options={{
-                        headerShown: false,
+                        headerShown: false,title:""
+                        ,
                         tabBarIcon: ({ color, size }) => (
-                            <Ionicons name="home" color={color} size={size} />
-                        )
+                            <Ionicons name="home" color={color} size={size+13} />
+                        ),
                     }} />
 
                 <Tab.Screen name="Account" component={ProfileScreen}
@@ -70,7 +70,7 @@ export default function TabScreen({ route, navigation }) {
 
                         headerShown: false,
                         tabBarIcon: ({ color, size }) => (
-                            <MaterialCommunityIcons name="account" color={color} size={size} />
+                            <MaterialCommunityIcons name="account" color={color} size={size+18} />
                         )
                     }} />
 

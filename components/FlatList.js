@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
 function calcualteTime(projectStartDate,timelimit) {
   
   const start_Date = new Date(projectStartDate);
-  var dueDate = new Date();
+  var dueDate = new Date(start_Date);
 
   dueDate.setDate(start_Date.getDate() + parseInt(timelimit))
   var nowD = new Date()
